@@ -21,11 +21,8 @@ export async function scrapeAmazonProductList(keyword) {
         const document = dom.window.document;
 
         // Select product elements
-        // Find product containers (Amazon uses different selectors)
         const productSelector = '[data-component-type="s-search-result"]';
-        let productElements = [];
-
-        productElements = document.querySelectorAll(productSelector);
+        const productElements = document.querySelectorAll(productSelector);
 
         if (productElements.length > 0) {
             console.log(`Found ${productElements.length} products`);
@@ -34,81 +31,51 @@ export async function scrapeAmazonProductList(keyword) {
             console.log("No products found.");
         }
 
-        const products = []
+        const products = [];
 
         // Extract product details
         productElements.forEach((element, index) => {
             try {
-                const product = extractProductDetails(element);
-
+                const product = extractProductDetails(element, index);
                 if (product) {
                     products.push(product);
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 console.error(`Error extracting product details for element ${index}:`, error.message);
             }
         });
 
-        console.log(`extracted ${products.length} products`)
+        console.log(`Extracted ${products.length} products`);
         return products;
     } catch (error) {
-        console.error(' Scraping failed:', error.message);
+        console.error('Scraping failed:', error.message);
         return [];
     }
-    function extractProductDetails(element, index) {
-        // Title selector
-        function extractProductDetails(element, index) {
-            // Title selector
-            const titleSelector = 'h2 a span';
+}
 
-            // Rating selector 
-            const ratingSelector = '.a-icon-alt';
+function extractProductDetails(element, index) {
+    const titleSelector = 'h2 a span';
+    const ratingSelector = '.a-icon-alt';
+    const reviewSelector = '.a-size-base';
+    const imageSelector = '.s-image';
 
-            // Review count selector 
-            const reviewSelector = '.a-size-base';
+    const titleElement = element.querySelector(titleSelector);
+    const ratingElement = element.querySelector(ratingSelector);
+    const reviewElement = element.querySelector(reviewSelector);
+    const imageElement = element.querySelector(imageSelector);
 
-            // Image selector 
-            const imageSelector = '.s-image';
+    const title = titleElement?.textContent.trim() || "N/A";
+    const rating = ratingElement?.textContent.trim() || "N/A";
+    const reviewCount = reviewElement?.textContent.trim() || "N/A";
+    const imageUrl = imageElement?.getAttribute("src")?.trim() || "N/A";
 
-            // Extract Details
-            let title = "";
-            let rating = "";
-            let reviews = "";
-            let image = "";
+    console.log(`✅ Product ${index + 1}: ${title.substring(0, 50)}...`);
 
-            const titleElement = element.querySelector(titleSelector);
-            if (titleElement?.textContent?.trim()) {
-                title = titleElement.textContent.trim();
-            }
-
-            const ratingElement = element.querySelector(ratingSelector);
-            if (ratingElement?.textContent?.trim()) {
-                rating = ratingElement.textContent.trim();
-            }
-
-            const reviewElement = element.querySelector(reviewSelector);
-            if (reviewElement?.textContent?.trim()) {
-                reviews = reviewElement.textContent.trim();
-            }
-
-            const imageElement = element.querySelector(imageSelector);
-            if (imageElement?.getAttribute("src")) {
-                image = imageElement.getAttribute("src").trim();
-            }
-
-
-            const product = {
-                id: index + 1,
-                title,
-                rating: rating || 'N/A',
-                reviewCount: reviewCount || 'N/A',
-                imageUrl: imageUrl || 'N/A'
-            };
-
-            console.log(`✅ Product ${index + 1}: ${title.substring(0, 50)}...`);
-            return product;
-        }
-
-    }
+    return {
+        id: index + 1,
+        title,
+        rating,
+        reviewCount,
+        imageUrl,
+    };
 }
