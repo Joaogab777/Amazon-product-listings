@@ -51,43 +51,59 @@ export async function scrapeAmazonProductList(keyword) {
         });
 
         console.log(`extracted ${products.length} products`)
+        return products;
     } catch (error) {
         console.error(' Scraping failed:', error.message);
+        return [];
     }
-}
+    function extractProductDetails(element, index) {
+        // Title selector
+        function extractProductDetails(element, index) {
+            // Title selector
+            const titleSelector = 'h2 a span';
 
-function extractProductDetails(element, index) {
-    // Title selector
-    const titleSelector = 'h2 a span'
+            // Rating selector 
+            const ratingSelector = '.a-icon-alt';
 
-    // Rating selector 
-    const ratingSelector = '.a-icon-alt'
+            // Review count selector 
+            const reviewSelector = '.a-size-base';
 
-    // Review count selector 
-    const reviewSelector = '.a-size-base'
+            // Image selector 
+            const imageSelector = '.s-image';
 
-    // Image selector 
-    const imageSelector = '.s-image'
+            // Extract Details
+            let title = "";
+            let rating = "";
+            let reviews = "";
+            let image = "";
 
-    // Extract Details
-    const titleElement =  element.querySelector(titleSelector)
-     if (titleElement?.textContent?.trim()) {
-      title = titleElement.textContent.trim();
+            const titleElement = element.querySelector(titleSelector);
+            if (titleElement?.textContent?.trim()) {
+                title = titleElement.textContent.trim();
+            }
+
+            const ratingElement = element.querySelector(ratingSelector);
+            if (ratingElement?.textContent?.trim()) {
+                rating = ratingElement.textContent.trim();
+            }
+
+            const reviewElement = element.querySelector(reviewSelector);
+            if (reviewElement?.textContent?.trim()) {
+                reviews = reviewElement.textContent.trim();
+            }
+
+            const imageElement = element.querySelector(imageSelector);
+            if (imageElement?.getAttribute("src")) {
+                image = imageElement.getAttribute("src").trim();
+            }
+
+            return {
+                title,
+                rating,
+                reviews,
+                image
+            };
+        }
+
     }
-
-    const ratingElement =  element.querySelector(ratingSelector)
-     if (ratingElement?.textContent?.trim()) {
-      title = ratingElement.textContent.trim();
-    }
-
-    const reviewElement =  element.querySelector(reviewSelector)
-     if (reviewElement?.textContent?.trim()) {
-      title = reviewElement.textContent.trim();
-    }
-
-    const imageElement =  element.querySelector(imageSelector)
-     if (imageElement?.textContent?.trim()) {
-      title = imageElement.textContent.trim();
-    }
-
 }
