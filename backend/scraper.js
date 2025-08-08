@@ -54,7 +54,7 @@ export async function scrapeAmazonProductList(keyword) {
 }
 
 function extractProductDetails(element, index) {
-    const titleSelector = 'h2 a span';
+    const titleSelector = 'h2 span';
     const ratingSelector = '.a-icon-alt';
     const reviewSelector = '.a-size-base';
     const imageSelector = '.s-image';
