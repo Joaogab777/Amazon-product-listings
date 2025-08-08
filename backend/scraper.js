@@ -97,12 +97,17 @@ export async function scrapeAmazonProductList(keyword) {
                 image = imageElement.getAttribute("src").trim();
             }
 
-            return {
+
+            const product = {
+                id: index + 1,
                 title,
-                rating,
-                reviews,
-                image
+                rating: rating || 'N/A',
+                reviewCount: reviewCount || 'N/A',
+                imageUrl: imageUrl || 'N/A'
             };
+
+            console.log(`✅ Product ${index + 1}: ${title.substring(0, 50)}...`);
+            return product;
         }
 
     }
