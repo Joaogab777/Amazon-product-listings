@@ -36,7 +36,7 @@ app.get('/api/scrape', async (req, res) => {
         // Call scraper function
         const products = await scrapeAmazonProductList(keyword);
 
-        console.log(`✅ Successfully scraped ${products.length} products`);
+        console.log(`Scraped ${products.length} products`);
 
         // Return results
         res.json({
@@ -47,7 +47,7 @@ app.get('/api/scrape', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Scraping error:', error.message);
+        console.error('Scraping error:', error.message);
 
         res.status(500).json({
             error: 'Failed to scrape Amazon products',
